@@ -4,16 +4,9 @@
  */
 
 require_once 'core/Router.php';
+require_once 'core/Request.php';
 
 $router = Router::getInstance();
+$request = parseRequest();
 
-//FIXME Move the code responsable for the URL Routing to another module.
-
-$method = $_SERVER['REQUEST_METHOD'];
-$uri = explode('/',filter_var(rtrim($_GET['url'],'/'),FILTER_SANITIZE_URL));
-$requestData = array();
-
-if(strcmp($method,'POST') === 0)
-    $requestData = $_POST;
-
-$router->route($method,$uri,$requestData);
+$router->route($request['method'],$request['uri'],$request['requestData']);
