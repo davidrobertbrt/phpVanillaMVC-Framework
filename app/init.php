@@ -9,4 +9,9 @@ require_once 'core/Request.php';
 $router = Router::getInstance();
 $request = parseRequest();
 
-$router->route($request['method'],$request['uri'],$request['requestData']);
+$router->route(
+    $request['controller'],
+    $request['action'],
+    $request['method'],
+    $request['requestData']
+);

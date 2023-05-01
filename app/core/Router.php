@@ -11,7 +11,7 @@ class Router{
     
     private function __construct()
     {
-        
+
     }
 
     public static function getInstance()
@@ -22,13 +22,9 @@ class Router{
         return self::$instance;
     }
 
-    public function route($method,$uri,$requestData = array())
+    public function route($controller,$action,$method,$requestData)
     {
-        print_r($uri);
-        echo '<br>';
-        echo $method;
-        echo '<br>';
-        print_r($requestData);
+        
     }
 
 }
