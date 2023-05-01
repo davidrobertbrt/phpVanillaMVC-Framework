@@ -59,8 +59,10 @@ class Router{
             die("Action not found.");
         }
 
-        //execute the controller action
-        call_user_func(array($controller,$actionName),...$data);
+        // execute the controller action
+        // the action will be called with the request data if it receives it
+        // if not the action will be called with no parameters.
+        $controller->$actionName(...$data[$method]);
     }
 
 }
