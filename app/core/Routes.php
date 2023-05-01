@@ -6,6 +6,8 @@
  */
 
 return array(
-    'GET' => array(),
+    'GET' => array(
+        'home@index' => array('controller' => 'HomeController','action'=>'index')
+    ),
     'POST' => array(),
 );

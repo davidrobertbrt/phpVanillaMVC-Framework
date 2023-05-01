@@ -8,10 +8,11 @@
 
 class Router{
     private static $instance = null;
+    private $routes = null;
     
     private function __construct()
     {
-
+        $this->routes = require_once 'Routes.php';
     }
 
     public static function getInstance()
@@ -22,7 +23,7 @@ class Router{
         return self::$instance;
     }
 
-    public function route($controller,$action,$method,$requestData)
+    public function route($requestDescriptor, $requestMethod,$requestData)
     {
         
     }
