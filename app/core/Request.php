@@ -10,37 +10,18 @@
 
 function parseRequest(){
     $uri = explode('/',filter_var(rtrim($_GET['url'],'/'),FILTER_SANITIZE_URL));
-
-    $controller = null;
-    $action = null;
+    $controller = $uri[0] ?? null;
+    $action = $uri[1] ?? null;
     $method = $_SERVER['REQUEST_METHOD'];
-    $requestData = array('GET'=>array(),'POST'=>array());
-
-    if(isset($uri[0]))
-    {
-        $controller = $uri[0];
-        unset($uri[0]);
-    }
-
-    if(isset($uri[1]))
-    {
-        $action = $uri[1];
-        unset($uri[1]);
-    }
-
-    if(count($uri) > 0)
-    {
-        $requestData['GET'] = array_values($uri);
-        unset($uri);
-    }
-
-    if(strcmp($method,'POST') === 0)
-        $requestData[$method] = $_POST;
+    $requestData = array(
+        'GET' => array_values(array_slice($uri,2)),
+        'POST' => ($_SERVER['REQUEST_METHOD'] === 'POST') ? $_POST : []
+    );
 
     return array(
-        'controller' => $controller,
-        'action' => $action,
-        'method' => $method,
+        'descriptor' => $controller . '@' . $action,
+        'requestMethod' => $method,
         'requestData' => $requestData
     );
+
 }
