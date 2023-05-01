@@ -9,7 +9,8 @@
 
 return array(
     'GET' => array(
-        'home@index' => array('controller' => 'HomeController','action'=>'index')
+        'example@index' => array('controller' => 'ExampleController','action'=>'index'),
+        'example@modelview' => array('controller' => 'ExampleController','action'=>'modelview')
     ),
     'POST' => array(),
 );
