@@ -28,7 +28,7 @@ class Model{
         return $stmt->fetch(PDO:FETCH_ASSOC);
     }
 
-    public function insert($table, $data)
+    public function create($table, $data)
     {
         $columns = implode(', ', array_keys($data));
         $placeholders = implode(', ', array_fill(0,count($data),'?'));
