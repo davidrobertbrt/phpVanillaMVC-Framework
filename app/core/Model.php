@@ -28,6 +28,24 @@ class Model{
         return $stmt->fetch(PDO:FETCH_ASSOC);
     }
 
+    public function readByParams($table, $data)
+    {
+        $where = '';
+        $values = array();
+        foreach($data as $column => $value)
+        {
+            if(strcmp($where, '') !== 0)
+                $where .= ' AND ';
+            $where .= '{$column} = ?';
+
+            $stmt = $this->db->prepare("SELECT * FROM {$table} WHERE {$where}");
+            $stmt->execute($values);
+        }
+
+        return $stmt->fetchAll(PDO:FETCH_ASSOC);
+
+    }
+
     public function create($table, $data)
     {
         $columns = implode(', ', array_keys($data));

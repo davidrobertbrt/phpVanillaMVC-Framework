@@ -26,7 +26,20 @@ class WeatherModel extends Model
 
     public function getByParams($params)
     {
-        //@TODO find object from database by other columns
+        $data = parent::readyByParams($this->getTableName(),$params);
+        
+        if(!$data)
+            return null;
+        
+        $results = array();
+
+        foreach($data as $row)
+            $results[] = Weather::loadByParams($row['id'],$row['date'],$row['temperature']);
+        
+        if(count($results) === 1)
+            return $results[0];
+        else
+            return $results;
     }
 
     public function getAll()
