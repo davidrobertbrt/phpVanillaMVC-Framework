@@ -11,6 +11,6 @@ class ExampleController extends Controller
     {
         $modelExample = $this->model("ExampleModel");
         $modelExample->setProperty("Data from the model example.");
-        $this->view('ExampleModelView',array('property'=>$modelExample->getProperty()));
+        $this->render('ExampleModelView',array('property'=>$modelExample->getProperty()));
     }
 }

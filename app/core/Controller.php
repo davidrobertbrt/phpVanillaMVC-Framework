@@ -13,7 +13,7 @@ class Controller{
         return new $model();
     }
 
-    public function view($view, $data = array())
+    public function render($view, $data = array())
     {
         require_once '../app/views/' . $view . '.php';
     }

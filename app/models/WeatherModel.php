@@ -14,6 +14,18 @@ class WeatherModel extends Model
         return 'weather';
     }
 
+    public function getAll()
+    {
+        $weatherList = array();
+        $dataList = parent::readAll($this->getTableName());
+
+        foreach ($dataList as $data) {
+            $weatherList[] = Weather::loadByParams($data['id'], $data['date'], $data['temperature']);
+        }
+
+        return $weatherList;
+    }
+
     public function getById($id)
     {
         $data = parent::readById($this->getTableName(),$id);
@@ -42,17 +54,6 @@ class WeatherModel extends Model
             return $results;
     }
 
-    public function getAll()
-    {
-        $weatherList = array();
-        $dataList = parent::readAll($this->getTableName());
-
-        foreach ($dataList as $data) {
-            $weatherList[] = Weather::loadByParams($data['id'], $data['date'], $data['temperature']);
-        }
-
-        return $weatherList;
-    }
 
     public function save(Weather $weather)
     {
