@@ -1,13 +1,16 @@
 <?php
-require_once '../config/DbConfig.php';
+require_once '../app/config/DbConfig.php';
 
 class Model{
     protected $db;
 
     public function __construct(){
+
+        $db_host = DbConfig::$DB_HOST;
+        $db_name = DbConfig::$DB_NAME;
         try{
-            $this->db = newPDO("mysql:host={$DB_HOST};db_name={$DB_NAME}",$DB_USER,$DB_NAME);
-            $this->db->setAttribute(PDO:ATTR_ERRMODE,PDO:ERRMODE_EXCEPTION);
+            $this->db = new PDO("mysql:host={$db_host};dbname={$db_name}",DbConfig::$DB_USER,DbConfig::$DB_PASS);
+            $this->db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
         }catch(PDOException $e){
             echo "Database connection failure: " . $e->getMessage();
             exit;
@@ -17,13 +20,13 @@ class Model{
     public function readAll($table)
     {
         $stmt = $this->db->query("SELECT * FROM {$table}");
-        return $stmt->fetchAll(PDO:FETCH_ASOOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function readById($table,$id)
     {
         $stmt = $this->db->prepare("SELECT * FROM {$table} WHERE id = :id");
-        $stmt->bindParam(':id',$id,PDO:PARAM_INT);
+        $stmt->bindParam(':id',$id,PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO:FETCH_ASSOC);
     }
@@ -42,7 +45,7 @@ class Model{
             $stmt->execute($values);
         }
 
-        return $stmt->fetchAll(PDO:FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     }
 
