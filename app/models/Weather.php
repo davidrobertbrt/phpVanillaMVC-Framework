@@ -39,7 +39,7 @@ class Weather{
         $this->date = $date;
     }
 
-    public function getTemperature($temperature)
+    public function getTemperature()
     {
         return $this->temperature;
     }
