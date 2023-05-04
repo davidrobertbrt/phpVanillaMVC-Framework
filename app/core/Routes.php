@@ -10,7 +10,8 @@
 return array(
     'GET' => array(
         'example@index' => array('controller' => 'ExampleController','action'=>'index'),
-        'example@modelview' => array('controller' => 'ExampleController','action'=>'modelview')
+        'example@modelview' => array('controller' => 'ExampleController','action'=>'modelview'),
+        'weather@index' => array('controller'=>'WeatherController','action'=>'show')
     ),
     'POST' => array(),
 );
