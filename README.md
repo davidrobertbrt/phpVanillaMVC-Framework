@@ -16,7 +16,7 @@ This repo contains a custom-built PHP framework that follows the Model-View-Cont
   * [`Request.php`](#-requestphp-)
   * [`Router.php`](#-routerphp-)
   * [`Model.php`](#-modelphp-)
-  * [Controller.php](#controllerphp)
+  * [`Controller.php`](#controllerphp)
 - [Reflection](#reflection)
 
 ## Demo
@@ -304,7 +304,7 @@ Finally, we use the `prepare()` function of PHP Data Objects to pass the SQL sta
 $stmt = $this->db->prepare("UPDATE {$table} SET {$set} WHERE id = ?");
 ```
 
-### Controller.php
+### `Controller.php`
 
 This class just imports the necessary PHP file for the specific view which the programmer wants to use. Before, I would actually use also another function called `model(...)` to import the model, but that isn't necessary, because it is simpler to use `require_once` in the specific Controller of each model/view combination.
 
