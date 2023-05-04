@@ -7,7 +7,6 @@ class WeatherController extends Controller{
     {
         $weatherModel = new weatherModel();
         $weatherList = $weatherModel->getAll();
-        print_r($weatherList);
         $this->render('WeatherShow',$weatherList);
     }
 }
