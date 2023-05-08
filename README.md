@@ -1,4 +1,6 @@
-**DISCLAIMER** This arhitecture is made as a hobby project and should not be used in production without proper validation and testing on your side! Under no circumstances I will be held responsible or liable in any way for any claims, damages, losses, expenses, costs or liabilities whatsoever (including, without limitation, any direct or indirect damages for loss of profits, business interruption or loss of information) resulting or arising directly or indirectly from your use of or inability to use this framework or any other forks from it, or from your reliance on the information and material on this repository, even if I have been advised of the possibility of such damages in advance.
+# DISCLAIMER
+
+**This framework is made as a hobby project and should not be used in production without proper validation and testing on your side! Under no circumstances I will be held responsible or liable in any way for any claims, damages, losses, expenses, costs or liabilities whatsoever (including, without limitation, any direct or indirect damages for loss of profits, business interruption or loss of information) resulting or arising directly or indirectly from your use of or inability to use this framework or any other forks from it, or from your reliance on the information and material on this repository, even if I have been advised of the possibility of such damages in advance.**
 
 # Custom MVC Framework in Vanilla PHP
 
