@@ -12,6 +12,8 @@ This repo contains a custom-built PHP framework that follows the Model-View-Cont
   * [Implementing new controllers](#implementing-new-controllers)
   * [Implementing new views](#implementing-new-views)
   * [Implementing new models](#implementing-new-models)
+  * [Implementing middlewares](#implementing-middlewares)
+  * [Using the Cookie utility class](#using-the-cookie-utility-class)
 - [Overview of the functionality](#overview-of-the-functionality)
   * [`Request.php`](#-requestphp-)
   * [`Router.php`](#-routerphp-)
@@ -226,6 +228,45 @@ The `create` function return the last ID inserted in the database table. The oth
 
 To use a new created model in your controller class make sure to include it using `require_once`. Also, your new created model should `require_once` the base model class file!
 
+### Implementing middlewares
+
+To implement a middleware, first create a new middleware by using the interface 'Middleware.php' which is stored in 'app/core'.
+
+Example of a middleware:
+
+```
+<?php
+class ExampleMiddleware implements Middleware{
+    public function __invoke($data){
+        echo("Example middleware invoked!");
+        return $data;
+    }
+}
+```
+
+The routing class automatically calls the middleware. $data represents the Response / Request based on what you need. For example if a user is not logged in, you can send a Response using the `Response` class. Simply create a new Request and pass it through `$data`. **Make sure that you always return `$data` because you might lose the request / response **
+
+To use the middlewares created in your applicatoin, define them in the `Middlewares.php` file based on the routes you defined in `routes.php`.
+
+### Using the Cookie utility class
+
+To create, get and delete cookies from the user, use the utiliy `Cookie` class provided.
+
+### Sending a response
+
+To send a response, simply create a new response object with the content (message) you want to send and also the HTTP status code.
+
+Example of a response sent in the `Router.php` class
+
+```
+            if (!file_exists($middlewareFilename)) 
+            {
+                $response = new Response("Middleware not found: $middlewareFilename",500);
+                $response->send();
+                exit();
+            }
+```
+
 ## Overview of the functionality
 
 The sub-folder `core` of the `app` folder include the main functionality of the framework.
@@ -248,22 +289,23 @@ Router is singleton based, mainly because it allows to maintain its state across
 We can also see that the router checks if a controller, and his action exist, which is why it is important the name of each controller class and the filename in which it is stored to be exactly the same.
 
 ```
-    $actionName = $route['action'];
-    if(!method_exists($controller,$actionName))
+    if(!file_exists($controllerFileName))
     {
-        // action was not found
-        http_response_code(500);
-        die("Action not found.");
+        // controller file was not found
+        $response = new Response("Controller not found.",500);
+        $response->send();
+        exit();
     }
 
 ```
 
 ```
-    if(!file_exists($controllerFileName))
+    if(!method_exists($controller,$actionName))
     {
-        // controller file was not found
-        http_response_code(500);
-        die("Controller not found.");
+        // action was not found
+        $response = new Response("Action not found.",500);
+        $response->send();
+        exit();
     }
 ```
 
