@@ -244,7 +244,7 @@ class ExampleMiddleware implements Middleware{
 }
 ```
 
-The routing class automatically calls the middleware. $data represents the Response / Request based on what you need. For example if a user is not logged in, you can send a Response using the `Response` class. Simply create a new Request and pass it through `$data`. **Make sure that you always return `$data` because you might lose the request / response **
+The routing class automatically calls the middleware. $data represents the Response / Request based on what you need. For example if a user is not logged in, you can send a Response using the `Response` class. Simply create a new Request and pass it through `$data`. **Make sure that you always return `$data` because you might lose the request / response.**
 
 To use the middlewares created in your applicatoin, define them in the `Middlewares.php` file based on the routes you defined in `routes.php`.
 
