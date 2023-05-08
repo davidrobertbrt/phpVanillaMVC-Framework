@@ -6,13 +6,15 @@
  * Creates instance of the appropriate controller and executes the action invoked by the user.
  */
 
-class Router{
+final class Router{
     private static $instance = null;
     private $routesTable = null;
+    private $middlewaresTable = null;
     
     private function __construct()
     {
         $this->routesTable = require_once 'Routes.php';
+        $this->middlewaresTable = require_once 'Middlewares.php';
     }
 
     public static function getInstance()
@@ -23,8 +25,12 @@ class Router{
         return self::$instance;
     }
 
-    public function route($descriptor, $method,$data)
+    public function route($request)
     {
+        $descriptor = $request->getDescriptor();
+        $method = $request->getMethod();
+        $data = $request->getData();
+
         $routes = $this->routesTable[$method];
         // find the route that matches the descriptor
         $route = $routes[$descriptor] ?? null;
@@ -32,8 +38,9 @@ class Router{
         if($route === null)
         {
             // route not found
-            http_response_code(404);
-            die("Page not found.");
+            $response = new Response("Page not found.",404);
+            $response->send();
+            exit();
         }
 
         $controllerName = $route['controller'];
@@ -42,8 +49,9 @@ class Router{
         if(!file_exists($controllerFileName))
         {
             // controller file was not found
-            http_response_code(500);
-            die("Controller not found.");
+            $response = new Response("Controller not found.",500);
+            $response->send();
+            exit();
         }
 
         // create an instance of the controller
@@ -55,8 +63,35 @@ class Router{
         if(!method_exists($controller,$actionName))
         {
             // action was not found
-            http_response_code(500);
-            die("Action not found.");
+            $response = new Response("Action not found.",500);
+            $response->send();
+            exit();
+        }
+
+        ///middleware calling should be handled here.
+        $middlewares = $this->middlewaresTable[$descriptor];
+
+        foreach($middlewares as $middlewareName)
+        {
+            $middlewareFilename = '../app/middlewares/' . $middlewareName . '.php';
+
+            if (!file_exists($middlewareFilename)) 
+            {
+                $response = new Response("Middleware not found: $middlewareFilename",500);
+                $response->send();
+                exit();
+            }
+
+            require_once $middlewareFilename;
+
+            $middleware = new $middlewareName;
+            $data = $middleware($data);
+            // check if middleware returned a response
+            if($data instanceof Response)
+            {
+                $data->send();
+                exit();
+            }
         }
 
         // execute the controller action
@@ -64,5 +99,4 @@ class Router{
         // if not the action will be called with no parameters.
         $controller->$actionName(...$data[$method]);
     }
-
 }

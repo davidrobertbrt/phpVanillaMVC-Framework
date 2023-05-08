@@ -1,5 +1,4 @@
 <?php
-require_once '../app/core/Model.php';
 require_once 'Weather.php';
 
 class WeatherModel extends Model
