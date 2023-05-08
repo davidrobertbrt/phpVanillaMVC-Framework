@@ -1,3 +1,5 @@
+**DISCLAIMER** This arhitecture is made as a hobby project and should not be used in production without proper validation and testing on your side! Under no circumstances I will be held responsible or liable in any way for any claims, damages, losses, expenses, costs or liabilities whatsoever (including, without limitation, any direct or indirect damages for loss of profits, business interruption or loss of information) resulting or arising directly or indirectly from your use of or inability to use this framework or any other forks from it, or from your reliance on the information and material on this repository, even if I have been advised of the possibility of such damages in advance.
+
 # Custom MVC Framework in Vanilla PHP
 
 This repo contains a custom-built PHP framework that follows the Model-View-Controller (MVC) arhitectural pattern. It provides a simple routing system to each controller based on the request sent from the browser, routing file for each URL and data abstraction layer using PHP Data Objects. View system is based on HTML webpages in which you can include CSS, JavaScript and information from the controller using PHP short tags.
@@ -246,7 +248,7 @@ class ExampleMiddleware implements Middleware{
 
 The routing class automatically calls the middleware. $data represents the Response / Request based on what you need. For example if a user is not logged in, you can send a Response using the `Response` class. Simply create a new Request and pass it through `$data`. **Make sure that you always return `$data` because you might lose the request / response.**
 
-To use the middlewares created in your applicatoin, define them in the `Middlewares.php` file based on the routes you defined in `routes.php`.
+To use the middlewares created in your application, define them in the `Middlewares.php` file based on the routes you defined in `routes.php`.
 
 ### Using the Cookie utility class
 
