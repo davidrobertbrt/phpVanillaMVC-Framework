@@ -10,6 +10,7 @@ require_once 'core/Middleware.php';
 require_once 'core/Model.php';
 require_once 'core/Cookie.php';
 
+
 $router = Router::getInstance();
 $request = Request::parse();
 
