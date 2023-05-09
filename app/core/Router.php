@@ -69,7 +69,7 @@ final class Router{
             }
         }
 
-        $response->setData($data);
+        $request->setData($data);
 
         $controllerName = $route['controller'];
         $controllerFileName = '../app/controllers/' . $controllerName . '.php';
