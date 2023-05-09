@@ -7,6 +7,14 @@
  */
 
 class Controller{
+
+    protected $request;
+
+    public function __construct($request)
+    {
+        $this->request = $request;
+    }
+
     public function render($view, $data = array())
     {
         require_once '../app/views/' . $view . '.php';
