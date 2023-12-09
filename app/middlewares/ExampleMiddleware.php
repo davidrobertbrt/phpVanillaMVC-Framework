@@ -1,7 +1,7 @@
 <?php
-class ExampleMiddleware implements Middleware{
-    public function __invoke($data){
+final class ExampleMiddleware implements Middleware{
+    public function __invoke($req){
         echo("Example middleware invoked!");
-        return $data;
+        return $req;
     }
 }
