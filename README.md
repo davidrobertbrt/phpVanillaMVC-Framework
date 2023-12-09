@@ -8,22 +8,7 @@ This repo contains a custom-built PHP framework that follows the Model-View-Cont
 
 ## Table of contents
 
-- [Demo](#demo)
-  * [Requirements](#requirements)
-  * [Installation](#installation)
-- [Directory structure](#directory-structure)
-- [Usage](#usage)
-  * [Implementing new controllers](#implementing-new-controllers)
-  * [Implementing new views](#implementing-new-views)
-  * [Implementing new models](#implementing-new-models)
-  * [Implementing middlewares](#implementing-middlewares)
-  * [Using the Cookie utility class](#using-the-cookie-utility-class)
-- [Overview of the functionality](#overview-of-the-functionality)
-  * [`Request.php`](#-requestphp-)
-  * [`Router.php`](#-routerphp-)
-  * [`Model.php`](#-modelphp-)
-  * [`Controller.php`](#controllerphp)
-- [Reflection](#reflection)
+To be written.
 
 ## Demo
 
@@ -65,45 +50,6 @@ You can also create a `vendor` folder to include any Composer dependencies you m
 ## Usage
 
 ### Implementing new controllers
-
-To create a new controller, simply create a new PHP file in the `app/Controllers` directory and extend the `Controller` class:
-
-```
-class ExampleController extends Controller
-{
-    // .. multiple actions
-}
-```
-
-__Make sure that the class name of your new controller is identical to the PHP filename in which it is stored.__
-
-To register the controller, create a new URI in the `Routes.php` file.
-
-The URI is based on this template: `controller@action`
-
-Based on the action you implemented in the controller, choose the appropriate HTTP request. For the code snippet provided, the HTTP request is GET.
-
-Create an associative array in `route.php`, making sure that the URI is the key of the array.
-```
-return array(
-    'GET' => array(
-        'example@index' => array('controller' => 'ExampleController','action'=>'index')
-    ),
-    'POST' => array(),
-);
-```
-
-__For the homepage URL '/', the URI is '@'__
-
-```
-return array(
-    'GET' => array(
-        // This is the default handler for / URL
-        '@' => array('controller' => 'ExampleController','action'=>'index')
-    ),
-    'POST' => array(),
-);
-```
 
 ### Implementing new views
 
@@ -150,7 +96,7 @@ Now, the view for the index() action: `ExampleIndex.php`
 class WeatherController extends Controller{
     public function show()
     {
-        $weatherModel = new weatherModel();
+        $weatherModel = new WeatherModel();
         $weatherList = $weatherModel->getAll();
         $this->render('WeatherShow',$weatherList);
     }
@@ -230,7 +176,7 @@ The `readBy..` functions from the base class `Model` return associative arrays b
 
 The `create` function return the last ID inserted in the database table. The other functions just return a boolean value based on the success or failure of the CRUD operation you used.
 
-To use a new created model in your controller class make sure to include it using `require_once`. Also, your new created model should `require_once` the base model class file!
+To use a new created model in your controller class make sure to include it using `require_once`.
 
 ### Implementing middlewares
 
