@@ -1,20 +1,24 @@
 <?php
 
 /**
- * Router module for the MVC arhitecture. 
- * Responsable for handling requests made by the user.
- * Creates instance of the appropriate controller and executes the action invoked by the user.
+ * Router Module for the MVC Architecture
+ * 
+ * This module handles requests made by the user in the MVC architecture.
+ * It creates an instance of the appropriate controller and executes the action
+ * invoked by the user. The router utilizes a mapping table to determine the
+ * appropriate route based on the HTTP method and descriptor.
+ * 
+ * @final
  */
 
 final class Router{
     private static $instance = null;
-    private $routesTable = null;
-    private $middlewaresTable = null;
+    private $mappingTable = null;
+    private $currentController = null;
     
     private function __construct()
     {
-        $this->routesTable = require_once 'Routes.php';
-        $this->middlewaresTable = require_once 'Middlewares.php';
+        $this->mappingTable = require_once '../app/config/Mapping.php';
     }
 
     public static function getInstance()
@@ -27,76 +31,100 @@ final class Router{
 
     public function route($request)
     {
-        $descriptor = $request->getDescriptor();
+        if((!$request instanceof Request)){
+            throw new InvalidArgumentException("A request object was not sent to the router!");
+        }
+
         $method = $request->getMethod();
-        $data = $request->getData();
+        $routes = $this->mappingTable[$method];
 
-        $routes = $this->routesTable[$method];
-        // find the route that matches the descriptor
-        $route = $routes[$descriptor] ?? null;
+        if(count($routes) === 0){
+            throw new InvalidArgumentException("No routes have been defined for this request method. Check mapping file.");
+        }
 
-        if($route === null)
+        $descriptor = $request->getDescriptor();
+
+        if(isset($routes[$descriptor]))
+            $currentRoute = $routes[$descriptor];
+        else
+            $currentRoute = null;
+
+        if(!isset($currentRoute))
         {
-            // route not found
             $response = new Response("Page not found.",404);
             $response->send();
-            exit();
+            return;
         }
 
-        ///middleware calling should be handled here.
-        $middlewares = $this->middlewaresTable[$descriptor];
-
-        foreach($middlewares as $middlewareName)
+        // executing the middlewares for the current route
+        foreach($currentRoute['middlewares'] as $middlewareEntry)
         {
-            $middlewareFilename = '../app/middlewares/' . $middlewareName . '.php';
+            // creating a middleware object and invoking it
+            $currentMiddleware = new $middlewareEntry;
+            $output = $currentMiddleware($request);
 
-            if (!file_exists($middlewareFilename)) 
+
+            // if the output is a non html response we just send it.
+            if($output instanceof Response)
             {
-                $response = new Response("Middleware not found: $middlewareFilename",500);
-                $response->send();
-                exit();
+                $output->send();
+                return;
             }
 
-            require_once $middlewareFilename;
-
-            $middleware = new $middlewareName;
-            $data = $middleware($data);
-            // check if middleware returned a response
-            if($data instanceof Response)
-            {
-                $data->send();
-                exit();
+            // if the output is still a request but modified, we should just pass it as the new request to the router.
+            if( !($output instanceof Request) ){
+                throw new UnexpectedValueException("Return value of middleware is not a Request or Response object!");
+            } else {
+                $request = $output;
             }
         }
 
-        $request->setData($data);
-
-        $controllerName = $route['controller'];
-        $controllerFileName = '../app/controllers/' . $controllerName . '.php';
-
-        if(!file_exists($controllerFileName))
+        // if the handler is a callable function
+        if(is_callable($currentRoute['handler']))
         {
-            // controller file was not found
-            $response = new Response("Controller not found.",500);
-            $response->send();
-            exit();
+            $reflection = new ReflectionFunction($currentRoute['handler']);
+
+            if($reflection->getNumberOfParameters() > 1)
+                throw new InvalidArgumentException("Callable function has more parameters. Callable functions only get the request as a parameter: $descriptor");
+
+            if($reflection->getNumberOfParameters() === 1)
+                $output = $currentRoute['handler']($request);
+            else
+                $output = $currentRoute['handler']();
+
+            // if the function does not return anything, we shouldn't check any instance of
+            if(!isset($output))
+                return;
+
+            if($output instanceof Response)
+            {
+                $output -> send();
+                return;
+            }
+
+            if(!($output instanceof Request))
+                throw new RuntimeException("Callable functions should return either a Request or a Response!: $descriptor");
         }
 
-        // create an instance of the controller
-        require_once $controllerFileName;
-        $controller = new $controllerName($request);
+        // getting the controller and action to call
+        $currentHandler = $currentRoute['handler'];
 
-        // check if the action exists
-        $actionName = $route['action'];
-        if(!method_exists($controller,$actionName))
-        {
-            // action was not found
-            $response = new Response("Action not found.",500);
-            $response->send();
-            exit();
+        if( !($this->currentController instanceof $currentHandler[0]) )
+            $this->currentController = new $currentHandler[0]($request);
+
+        $actionName = $currentHandler[1];
+
+        if(!method_exists($this->currentController,$actionName)){
+            throw new RuntimeException("Action not found: $actionName");
         }
 
-        // execute the controller action
-        $controller->$actionName();
+        $output = $this->currentController->$actionName();
+        
+        // if the controller just sends a response we should treat it as is.
+        if($output instanceof Response)
+        {
+            $output->send();
+            return;
+        }
     }
 }
