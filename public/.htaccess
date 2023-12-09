@@ -2,11 +2,12 @@
 Options -MultiViews
 RewriteEngine On
 
-RewriteBase /simplemvc/public
+RewriteBase /forumapp/public
 
 # If the request is not a directory and not a file,
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 
-# Rewrite the URL to index.php and pass the requested url to the routing class
-RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
+# Rewrite the URL to index.php and pass the requested URL to the routing class
+RewriteRule ^([^/]+)$ index.php?url=$1 [QSA,L]
+RewriteRule ^([^/]+)/([^/]+)$ index.php?url=$1/$2 [QSA,L]
