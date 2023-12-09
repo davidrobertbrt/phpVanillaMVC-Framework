@@ -2,7 +2,7 @@
 Options -MultiViews
 RewriteEngine On
 
-RewriteBase /forumapp/public
+RewriteBase /phpVanillaMVC-Framework/public
 
 # If the request is not a directory and not a file,
 RewriteCond %{REQUEST_FILENAME} !-d
